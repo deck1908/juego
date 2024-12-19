@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('https://imagenes.heraldo.es/files/image_640_auto/uploads/imagenes/2024/03/16/inside-out-2-delreves-1.jpeg');
+            background-size: cover;
+            background-position: center;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            position: relative;
+            overflow: hidden;
+            
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+            z-index: 1;
+        }
+
+        .game-container {
+            z-index: 2;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 30px;
+            padding: 100px; /* Ajusta el padding */
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+            width: 600px; /* Ancho reducido */
+            text-align: center;
+            border: 5px solid #ffcc00; /* Borde dorado */
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: #ffcc00;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        p {
+            font-size: 1.5rem;
+            margin: 15px 0;
+            text-align: center;
+            color: #333;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn {
+            background-color: #ffcc00;
+            color: #333;
+            border: none;
+            border-radius: 10px;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:hover {
+            background-color: #ffd700;
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        #result {
+            font-size: 2rem;
+            margin-top: 30px;
+            display: none;
+            font-weight: bold;
+            color: #ff4500; /* Color vibrante para el resultado */
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .reset-btn {
+            background-color: #dc3545;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+        }
+
+        .reset-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div> <!-- Esta línea invoca la clase overlay -->
+
+    <div class="game-container"> <!-- Contenedor del juego -->
+        <h1>ADIVINA LA EMOCIÓN</h1>
+        <p id="question"></p>
+        <button class="btn" onclick="nextQuestion('yes')">Sí</button>
+        <button class="btn" onclick="nextQuestion('no')">No</button>
+        <p id="result"></p>
+        <button class="reset-btn" 
+        onclick="resetGame()" style="display: none;">Reiniciar</button>
+    </div>
+
+    <script>
+        let step = 0;
+        let answers = [];
+
+        const questions = [
+        "Bienvenido a nuestro juego de adivinanza, en la que existen 9 emociones, las cuales son:---------------------------------------------------------- 1. Alegría------------------------------------------------------------- 2.-Tristeza------------------------------------------------------------ 3.-Furia--------------------------------------------------------------- 4.-temor--------------------------------------------------------------- 5.- Ansiedad--------------------------------------------------------- 6.- Vergüenza------------------------------------------------------- 7.-Desgrado--------------------------------------------------------- 8.-Aburrimento------------------------------------------------------ 9.-Envidia---------------------------- ten una en mente, yo me encagaré de adivinar en cuál piensas                      LISTO?",
+        " ¿Te sientes impulsado a actuar de manera agresiva o defensiva cuando alguien te provoca?",
+        "¿Es una emoción que puede surgir en situaciones sociales?",
+        "¿Puedes experimentar la emoción en momentos de cambios significativos en tu vida?",
+        "¿Es una emoción que puede cometer un acto de injusticia?",
+        "¿Esta emoción puede surgir cuando recuerdas algún momento del pasado?",
+        "¿Es una emoción que a menudo se manifiesta físicamente, como tensión, tensión muscular, malestar o mal genio?",
+        "¿Te sientes motivado cuando experimentas esta emoción?",
+        "¿Es una emoción que te hace reflexionar sobre la gente con la que te relacionas?",
+        "¿Esta emoción se puede presentar cuando te enfrentas a malos momentos o de disgusto?",
+        "¿Es una emoción que puede ser provocada por otros, como comentarios o acciones?",
+        "¿Sientes esta emoción cuando logras un objetivo o meta personal?"
+        ];
+
+        // Definir las posibles emociones
+        const emotions = {
+           
+
+
+            "Alegría": {
+                "continuar": "yes",
+                "impulso":"no",
+                "situaciones-sociales": "yes",
+                "cambios": "yes",
+                "injusticia": "no",
+                "recuerdos": "yes",
+                "manifestación": "no",
+                "motivacion": "yes",
+                "reflexion": "yes",
+                "malos-momentos": "no",
+                "comentarios": "yes",
+                "logros": "yes"
+            },
+            "Furia": {
+                "continuar":"yes",
+                "impulso":"yes",
+                "situaciones-sociales": "yes",
+                "cambios": "no",
+                "injusticia": "yes",
+                "recuerdos": "no",
+                "manifestación": "yes",
+                "motivacion": "no",
+                "reflexion": "no",
+                "malos-momentos": "yes",
+                "comentarios": "yes",
+                "logros": "no"
+            },
+            "Tristeza": {
+                "continuar": "yes",
+                "impulso":"no",
+                "situaciones-sociales": "yes",
+                "cambios": "yes",
+                "injusticia": "no",
+                "recuerdos": "yes",
+                "manifestación": "yes",
+                "motivacion": "no",
+                "reflexion": "yes",
+                "malos-momentos": "yes",
+                "comentarios": "yes",
+                "logros": "no"
+            },
+            "Desagrado": {
+                "continuar": "yes",
+                "impulso":"no",
+                "situaciones-sociales": "yes",
+                "cambios": "yes",
+                "injusticia": "yes",
+                "recuerdos": "yes",
+                "manifestación": "yes",
+                "motivacion": "no",
+                "reflexion": "yes",
+                "malos-momentos": "yes",
+                "comentarios": "yes",
+                "logros": "no"
+                
+            },
+            "Temor": {
+                "continuar": "yes",
+                "impulso":"no",
+                "situaciones-sociales": "yes",
+                "cambios": "no",
+                "injusticia": "no",
+                "recuerdos": "no",
+                "manifestación": "yes",
+                "motivacion": "no",
+                "reflexion": "yes",
+                "malos-momentos": "yes",
+                "comentarios": "yes",
+                "logros": "no"
+                
+            },
+            "Ansiedad": {
+               "continuar": "yes",
+               "impulso":"no",
+                "situaciones-sociales": "yes",
+                "cambios": "no",
+                "injusticia": "no",
+                "recuerdos": "yes",
+                "manifestación": "yes",
+                "motivacion": "no",
+                "reflexion": "no",
+                "malos-momentos": "yes",
+                "comentarios": "yes",
+                "logros": "no"
+                
+            },
+            "Vergüenza": {
+               "continuar": "yes",
+               "impulso":"no",
+                "situaciones-sociales": "yes",
+                "cambios": "no",
+                "injusticia": "no",
+                "recuerdos": "yes",
+                "manifestación": "yes",
+                "motivacion": "no",
+                "reflexion": "no",
+                "malos-momentos": "yes",
+                "comentarios": "yes",
+                "logros": "no"
+                
+            },
+            "Aburrimiento": {
+                "continuar": "yes",
+                "impulso":"no",
+                "situaciones-sociales": "yes",
+                "cambios": "no",
+                "injusticia": "no",
+                "recuerdos": "no",
+                "manifestación": "yes",
+                "motivacion": "no",
+                "reflexion": "yes",
+                "malos-momentos": "yes",
+                "comentarios": "no",
+                "logros": "no"
+                
+            },
+            "Envidia": {
+               "continuar": "yes",
+               "impulso":"no",
+                "situaciones-sociales": "yes",
+                "cambios": "no",
+                "injusticia": "no",
+                "recuerdos": "no",
+                "manifestación": "yes",
+                "motivacion": "no",
+                "reflexion": "yes",
+                "malos-momentos": "yes",
+                "comentarios": "yes",
+                "logros": "no"
+                
+            }
+        };
+
+        function nextQuestion(answer) {
+            answers.push(answer);
+            step++;
+
+            if (step < questions.length) {
+                document.getElementById('question').innerText = questions[step];
+            } else {
+                determineEmotion();
+            }
+        }
+
+         function determineEmotion() {
+            let possibleEmotions = Object.keys(emotions);
+            for (let i = 0; i < answers.length; i++) {
+                let questionKey = Object.keys(emotions[Object.keys(emotions)[0]])[i];
+                possibleEmotions = possibleEmotions.filter(emotion => emotions[emotion][questionKey] === answers[i]);
+            }
+
+            if (possibleEmotions.length === 1) {
+                let emotion = possibleEmotions[0];
+                document.getElementById('result').innerText = 'La emoción en la que piensas es: ${emotion}';
+            } else {
+                document.getElementById('result').innerText = "No he podido reconocer en cuál estás pensando.";
+            }
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('question').style.display = 'none';
+            document.querySelectorAll('.btn:not(.reset-btn)').forEach(btn => btn.style.display = 'none');
+            document.querySelector('.reset-btn').style.display = 'inline-block';
+        }
+
+        function resetGame() {
+            step = 0;
+            answers = [];
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('question').style.display = 'block';
+            document.getElementById('question').innerText = questions[step];
+            document.querySelectorAll('.btn').forEach(btn => btn.style.display = 'inline-block');
+            document.querySelector('.reset-btn').style.display = 'none';
+        }
+
+        
+
+        document.getElementById('question').innerText = questions[step];
+    </script>
+</body>
+</html>
